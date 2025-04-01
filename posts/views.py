@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404 # 추가
 from django.views.decorators.http import require_http_methods # 추가
 from .models import * # 추가
 
-# Create your views here.
 @require_http_methods(["GET"])
 def get_post_detail(reqeust, id):
     post = get_object_or_404(Post, pk=id)
