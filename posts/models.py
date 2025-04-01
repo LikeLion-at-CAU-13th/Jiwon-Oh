@@ -17,7 +17,8 @@ class Post(BaseModel): # BaseModel을 상속받음
         ('STORED', '보관'),
         ('PUBLISHED', '발행')
     )
-
+    
+    
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=30)
     content = models.TextField()
