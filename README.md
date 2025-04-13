@@ -1,22 +1,16 @@
-# [WEEK5] DJANGO-CRUD
+# [WEEK6] DJANGO-AWS EC2
 
 
-**POSTMAM**
+**LOGGING / 로그 확인하기**
 
-**1) 특정 게시글 comment 조회**
+**1) 모든 http requirement 로깅하기**
 
--> http://127.0.0.1:8000/post/1/comments/
-<img width="1470" alt="스크린샷 2025-04-06 오후 5 16 26" src="https://github.com/user-attachments/assets/58fa8404-0610-42fb-b55d-03ca35873304" />
-
-<img width="1470" alt="스크린샷 2025-04-06 오후 5 16 56" src="https://github.com/user-attachments/assets/6eaabdfb-640b-40cb-b1b2-7b2d5a6ce3b5" />
+<img width="1470" alt="스크린샷 2025-04-13 오후 9 55 03" src="https://github.com/user-attachments/assets/61bb9568-26d9-4c76-aa52-21ce44336ebf" />
 
 
 <br/>
 <br/>
 
-**2) 카테고리별 게시글 필터링**
+**2) warning 이상 에러는 errors.log로 로깅하기**
 
--> http://127.0.0.1:8000/post/category/1/
-<img width="1470" alt="스크린샷 2025-04-06 오후 5 12 15" src="https://github.com/user-attachments/assets/438460c9-b9ad-43f4-be4e-ce69d443e60c" />
-
-<img width="1470" alt="스크린샷 2025-04-06 오후 5 15 26" src="https://github.com/user-attachments/assets/b997a4e6-2814-4c18-898a-509af10e5ecd" />
+<img width="1470" alt="스크린샷 2025-04-13 오후 9 55 07" src="https://github.com/user-attachments/assets/e304161a-824b-4048-bbdd-8389e03c184e" />
