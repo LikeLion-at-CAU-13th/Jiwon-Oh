@@ -1,7 +1,7 @@
 # [WEEK7] DJANGO-DRF API
 
 
-**POSTMAM**
+**POSTMAN**
 
 **[FBV -> CBV] 특정 게시글 comment 조회 API**
 
