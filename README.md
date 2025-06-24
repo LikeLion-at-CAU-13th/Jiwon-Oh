@@ -1,16 +1,9 @@
-# [WEEK6] DJANGO-AWS EC2
+# [WEEK7] DJANGO-DRF API
 
 
-**LOGGING / 로그 확인하기**
+**POSTMAN**
 
-**1) 모든 http requirement 로깅하기**
+**[FBV -> CBV] 특정 게시글 comment 조회 API**
 
-<img width="1470" alt="스크린샷 2025-04-13 오후 9 55 03" src="https://github.com/user-attachments/assets/61bb9568-26d9-4c76-aa52-21ce44336ebf" />
-
-
-<br/>
-<br/>
-
-**2) warning 이상 에러는 errors.log로 로깅하기**
-
-<img width="1470" alt="스크린샷 2025-04-13 오후 9 55 07" src="https://github.com/user-attachments/assets/e304161a-824b-4048-bbdd-8389e03c184e" />
+- http://127.0.0.1:8000/post/comment/<int:post_id>/
+<img width="1470" alt="스크린샷 2025-05-04 오전 11 15 59" src="https://github.com/user-attachments/assets/70f46a7b-5bde-4f68-8907-122e5bc952e4" />
