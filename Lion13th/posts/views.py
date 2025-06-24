@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404 # 추가
 from django.views.decorators.http import require_http_methods # 추가
 from .models import *
 import json
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from config.permissions import IsAllowedTimeNOwerOrReadOnly
 
 from .serializers import PostSerializer, CommentSerializer
 
@@ -26,19 +28,31 @@ class PostList(APIView):
         return Response(serializer.data)
     
 class PostDetail(APIView):
+    permission_classes = [IsAllowedTimeNOwerOrReadOnly]
+
+    def get_object(self, post_id): 
+        return get_object_or_404(Post, id=post_id)
+
     def get(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
+        post = self.get_object(post_id)
+        self.check_object_permissions(request, post)
         serializer = PostSerializer(post)
         return Response(serializer.data)
+    
     def put(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
+        post = self.get_object(post_id)
+        self.check_object_permissions(request, post) #권한체크
+
         serializer = PostSerializer(post, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     def delete(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
+        post = self.get_object(post_id)
+        self.check_object_permissions(request, post) #권한체크
+
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -64,8 +78,8 @@ def post_list(request):
         # byte -> 문자열 -> python 딕셔너리
         body = json.loads(request.body.decode('utf-8'))
     
-		    # 프론트에게서 user id를 넘겨받는다고 가정.
-		    # 외래키 필드의 경우, 객체 자체를 전달해줘야하기 때문에
+		# 프론트에게서 user id를 넘겨받는다고 가정.
+		# 외래키 필드의 경우, 객체 자체를 전달해줘야하기 때문에
         # id를 기반으로 user 객체를 조회해서 가져옵니다 !
         user_id = body.get('user')
         user = get_object_or_404(User, pk=user_id)
