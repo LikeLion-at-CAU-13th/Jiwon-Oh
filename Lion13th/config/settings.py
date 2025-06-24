@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount.providers.google",   
 
     'storages',
+    'drf_yasg', #Swagger
      
     # "allauth.socialaccount.providers.{제공_업체}" 찾아서 사용 가능
 ]

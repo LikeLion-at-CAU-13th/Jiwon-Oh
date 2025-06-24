@@ -20,6 +20,10 @@ from .serializers import ImageSerializer
 from django.conf import settings
 import boto3
 
+#swagger
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 class PostList(APIView):
     def post(self, request, format=None):
         serializer = PostSerializer(data=request.data)
@@ -289,3 +293,30 @@ class ImageUploadView(APIView):
 
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+##### Swagger #####
+
+class PostList(APIView):
+    @swagger_auto_schema(
+        operation_summary="게시글 생성",
+        operation_description="새로운 게시글을 생성합니다.",
+        request_body=PostSerializer,
+        responses={201: PostSerializer, 400: "잘못된 요청"}
+    )
+    def post(self, request, format=None):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @swagger_auto_schema(
+        operation_summary="게시글 목록 조회",
+        operation_description="모든 게시글을 조회합니다.",
+        responses={200: PostSerializer(many=True)}
+    )
+    def get(self, request, format=None):
+        posts = Post.objects.all()
+	    # 많은 post들을 받아오려면 (many=True) 써줘야 한다!
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
