@@ -1,9 +1,12 @@
-# [WEEK7] DJANGO-DRF API
+# [WEEK12] IAM & RDS & S3 & SWAGGER
+
+**assignment 1**
+- 동일한 파일 중복 업로드될 수 있도록 리펙토링
+<img width="1470" alt="1" src="https://github.com/user-attachments/assets/af0a994c-ab61-438c-8563-d78d76819dce" />
+<img width="1470" alt="2" src="https://github.com/user-attachments/assets/3ce21cb2-284a-4863-be1d-b402fd76f902" />
 
 
-**POSTMAN**
+**assignment 2**
+- post APP API Swagger 문서 완성
+<img width="1450" alt="스크린샷 2025-06-24 오후 11 59 16" src="https://github.com/user-attachments/assets/0d9dec1e-ad47-4c0c-b775-cf8df58a98fa" />
 
-**[FBV -> CBV] 특정 게시글 comment 조회 API**
-
-- http://127.0.0.1:8000/post/comment/<int:post_id>/
-<img width="1470" alt="스크린샷 2025-05-04 오전 11 15 59" src="https://github.com/user-attachments/assets/70f46a7b-5bde-4f68-8907-122e5bc952e4" />
