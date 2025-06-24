@@ -24,6 +24,8 @@ import boto3
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 import uuid #image 마다 고유 id 넣을 수 있도록 
+from rest_framework.parsers import MultiPartParser, FormParser #세션2 오류 해결용..
+
 
 class PostList(APIView):
     def post(self, request, format=None):
@@ -328,6 +330,8 @@ class PostList(APIView):
     
 ## 과제 2 image
 class ImageUploadView(APIView):
+    parser_classes = [MultiPartParser, FormParser]  # ✅ 이것 추가
+
     @swagger_auto_schema(
         operation_summary="이미지 업로드",
         operation_description="이미지 파일을 S3에 업로드하고 URL을 반환합니다.",
