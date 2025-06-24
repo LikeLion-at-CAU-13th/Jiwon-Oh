@@ -23,6 +23,7 @@ import boto3
 #swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+import uuid #image 마다 고유 id 넣을 수 있도록 
 
 class PostList(APIView):
     def post(self, request, format=None):
@@ -257,6 +258,7 @@ def hello_world(request):
 def index(request):
     return render(request, 'index.html')
 
+### imageupload ### 
 class ImageUploadView(APIView):
     def post(self, request):
         if 'image' not in request.FILES:
@@ -271,8 +273,11 @@ class ImageUploadView(APIView):
             region_name=settings.AWS_REGION
         )
 
-        # S3에 파일 저장
-        file_path = f"uploads/{image_file.name}"
+        # file_path = f"uploads/{image_file.name}"
+        # S3에 파일 저장 -> 저장할 때마다 고유 id 
+        unique_filename = f"{uuid.uuid4()}_{image_file.name}"
+        file_path = f"uploads/{unique_filename}"
+
         # S3에 파일 업로드
         try:
             s3_client.put_object(
@@ -320,3 +325,89 @@ class PostList(APIView):
 	    # 많은 post들을 받아오려면 (many=True) 써줘야 한다!
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+    
+## 과제 2 image
+class ImageUploadView(APIView):
+    @swagger_auto_schema(
+        operation_summary="이미지 업로드",
+        operation_description="이미지 파일을 S3에 업로드하고 URL을 반환합니다.",
+        manual_parameters=[
+            openapi.Parameter(
+                'image',
+                openapi.IN_FORM,
+                description="업로드할 이미지 파일",
+                type=openapi.TYPE_FILE,
+                required=True
+            )
+        ],
+        responses={201: ImageSerializer}
+    )
+    def post(self, request):
+        if 'image' not in request.FILES:
+            return Response({"error": "No image file"}, status=status.HTTP_400_BAD_REQUEST)
+
+        image_file = request.FILES['image']
+
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_REGION
+        )
+
+        unique_filename = f"{uuid.uuid4()}_{image_file.name}"
+        file_path = f"uploads/{unique_filename}"
+
+        try:
+            s3_client.put_object(
+                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                Key=file_path,
+                Body=image_file.read(),
+                ContentType=image_file.content_type,
+            )
+        except Exception as e:
+            return Response({"error": f"S3 Upload Failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        image_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.{settings.AWS_REGION}.amazonaws.com/{file_path}"
+        image_instance = Image.objects.create(image_url=image_url)
+        serializer = ImageSerializer(image_instance)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+## 과제2 - post 부분
+class PostDetail(APIView):
+    permission_classes = [IsAllowedTimeNOwerOrReadOnly]
+
+    @swagger_auto_schema(
+        operation_summary="단일 게시글 조회",
+        responses={200: PostSerializer}
+    )
+    def get(self, request, post_id):
+        post = self.get_object(post_id)
+        self.check_object_permissions(request, post)
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
+
+    @swagger_auto_schema(
+        operation_summary="게시글 수정",
+        request_body=PostSerializer,
+        responses={200: PostSerializer, 400: "잘못된 요청"}
+    )
+    def put(self, request, post_id):
+        post = self.get_object(post_id)
+        self.check_object_permissions(request, post)
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary="게시글 삭제",
+        responses={204: "삭제 성공"}
+    )
+    def delete(self, request, post_id):
+        post = self.get_object(post_id)
+        self.check_object_permissions(request, post)
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
