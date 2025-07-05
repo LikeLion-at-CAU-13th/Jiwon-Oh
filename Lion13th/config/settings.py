@@ -92,6 +92,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'posts.middleware.RequestLoggingMiddleware',
     "allauth.account.middleware.AccountMiddleware",  
+    "config.middlewares.ExceptionHandlerMiddleware",  # 커스텀 예외 처리 미들웨어 추가
+
 
 ]
 

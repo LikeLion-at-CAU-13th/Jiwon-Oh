@@ -146,21 +146,22 @@ def post_detail(request, post_id):
 
     # post_id에 해당하는 단일 게시글 조회
     if request.method == "GET":
-        post = get_object_or_404(Post, pk=post_id)
+        try:
+            post=Post.objects.get(id=post_id)
+            post_detail_json = {
+                "id" : post.id,
+                "title" : post.title,
+                "content" : post.content,
+                "status" : post.status,
+                "user" : post.user.username
+            }
+            return JsonResponse({
+                "status" : 200,
+                "data": post_detail_json})
+        except Post.DoesNotExist:
+            raise PostNotFoundException
 
-        post_json = {
-            "id": post.id,
-            "title": post.title,
-            "content": post.content,
-            "status": post.status,
-            "user": post.user.id,
-        }
-        
-        return JsonResponse({
-            'status': 200,
-            'message': '게시글 단일 조회 성공',
-            'data': post_json
-        })
+    
 
     if request.method == "PATCH":
         body = json.loads(request.body.decode('utf-8'))
