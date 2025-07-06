@@ -7,3 +7,7 @@
 **실습 2**
 - 중복 데이터 POST 
 <img width="1470" alt="스크린샷 2025-07-06 오전 9 57 58" src="https://github.com/user-attachments/assets/fb68b2eb-e6cb-47b2-b7e4-01fe9c35ff72" />
+
+**과제 1**
+- 에러 종류 반환
+<img width="1470" alt="스크린샷 2025-07-06 오전 10 24 30" src="https://github.com/user-attachments/assets/3c9b9c9d-ada4-43ee-8e0f-d73550877332" />
