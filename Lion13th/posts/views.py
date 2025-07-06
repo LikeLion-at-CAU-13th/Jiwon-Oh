@@ -29,11 +29,15 @@ from rest_framework.parsers import MultiPartParser, FormParser #세션2 오류 �
 
 class PostList(APIView):
     def post(self, request, format=None):
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, pk=user_id)
+
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=user)  # user 객체 직접 전달!
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get(self, request, format=None):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
@@ -316,7 +320,7 @@ class PostList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @swagger_auto_schema(
         operation_summary="게시글 목록 조회",

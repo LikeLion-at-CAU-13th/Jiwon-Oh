@@ -1,11 +1,15 @@
-### Model Serializer case
-
+from config.custom_api_exceptions import PostConflictException
 from rest_framework import serializers
 from .models import Post, Comment
 from .models import Image
 
 
 class PostSerializer(serializers.ModelSerializer):
+  def validate(self, data):
+    if Post.objects.filter(title=data['title']).exists():
+      raise PostConflictException(detail=f"A post with title: '{data['title']}' already exists.")
+    
+    return data
 
   class Meta:
 		# 어떤 모델을 시리얼라이즈할 건지
