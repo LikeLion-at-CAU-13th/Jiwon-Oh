@@ -73,17 +73,23 @@ class PostDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CommentList(APIView):
-    def post(self, request, format=None):
-        serializer = CommentSerializer(data=request.data)
+    def post(self, request, post_id, format=None):
+        # URL의 post_id를 body에 강제로 삽입 <- id 안넣어도 됨
+        data = request.data.copy()
+        data['post'] = post_id
+
+        serializer = CommentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
         comments = Comment.objects.filter(post=post)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
+
 
 # 함수 데코레이터, 특정 http method만 허용
 @require_http_methods(["POST","GET"])
