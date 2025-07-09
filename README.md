@@ -1,12 +1,13 @@
-# [WEEK12] IAM & RDS & S3 & SWAGGER
+# [WEEK14] 예외처리
 
-**assignment 1**
-- 동일한 파일 중복 업로드될 수 있도록 리펙토링
-<img width="1470" alt="1" src="https://github.com/user-attachments/assets/af0a994c-ab61-438c-8563-d78d76819dce" />
-<img width="1470" alt="2" src="https://github.com/user-attachments/assets/3ce21cb2-284a-4863-be1d-b402fd76f902" />
+**실습 1**
+- 세부 조회
+<img width="1470" alt="스크린샷 2025-07-06 오전 9 36 38" src="https://github.com/user-attachments/assets/81c31c8f-3519-4851-b014-4013da554ec2" />
 
+**실습 2**
+- 중복 데이터 POST 
+<img width="1470" alt="스크린샷 2025-07-06 오전 9 57 58" src="https://github.com/user-attachments/assets/fb68b2eb-e6cb-47b2-b7e4-01fe9c35ff72" />
 
-**assignment 2**
-- post APP API Swagger 문서 완성
-<img width="1450" alt="스크린샷 2025-06-24 오후 11 59 16" src="https://github.com/user-attachments/assets/0d9dec1e-ad47-4c0c-b775-cf8df58a98fa" />
-
+**과제 1**
+- 에러 종류 반환
+<img width="1470" alt="스크린샷 2025-07-06 오전 10 24 30" src="https://github.com/user-attachments/assets/3c9b9c9d-ada4-43ee-8e0f-d73550877332" />
