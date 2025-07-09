@@ -27,5 +27,11 @@ class PostConflictException(ConflictException):
 
 class ShortCommentException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
-    default_detail = "댓글은 최소 15자 이상이어야 합니다."
+    default_detail = "댓글은 최소 15자 이상!!"
     default_code = "comment_too_short"
+
+
+class DailyPostLimitException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "하루에 하나만 올려야 돼!"
+    default_code = 'daily_post_limit_exceeded'

@@ -32,7 +32,7 @@ class PostList(APIView):
         user_id = request.data.get('user')
         user = get_object_or_404(User, pk=user_id)
 
-        serializer = PostSerializer(data=request.data)
+        serializer = PostSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save(user=user)  # user 객체 직접 전달!
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -74,7 +74,7 @@ class PostDetail(APIView):
 
 class CommentList(APIView):
     def post(self, request, post_id, format=None):
-        # URL의 post_id를 body에 강제로 삽입 <- id 안넣어도 됨
+        # URL의 post_id를 body에 강제로 삽입 <- id 안넣어도 됨!
         data = request.data.copy()
         data['post'] = post_id
 
