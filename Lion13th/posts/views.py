@@ -29,11 +29,15 @@ from rest_framework.parsers import MultiPartParser, FormParser #세션2 오류 �
 
 class PostList(APIView):
     def post(self, request, format=None):
-        serializer = PostSerializer(data=request.data)
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, pk=user_id)
+
+        serializer = PostSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=user)  # user 객체 직접 전달!
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get(self, request, format=None):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
@@ -69,17 +73,23 @@ class PostDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CommentList(APIView):
-    def post(self, request, format=None):
-        serializer = CommentSerializer(data=request.data)
+    def post(self, request, post_id, format=None):
+        # URL의 post_id를 body에 강제로 삽입 <- id 안넣어도 됨!
+        data = request.data.copy()
+        data['post'] = post_id
+
+        serializer = CommentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
         comments = Comment.objects.filter(post=post)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
+
 
 # 함수 데코레이터, 특정 http method만 허용
 @require_http_methods(["POST","GET"])
@@ -146,21 +156,22 @@ def post_detail(request, post_id):
 
     # post_id에 해당하는 단일 게시글 조회
     if request.method == "GET":
-        post = get_object_or_404(Post, pk=post_id)
+        try:
+            post=Post.objects.get(id=post_id)
+            post_detail_json = {
+                "id" : post.id,
+                "title" : post.title,
+                "content" : post.content,
+                "status" : post.status,
+                "user" : post.user.username
+            }
+            return JsonResponse({
+                "status" : 200,
+                "data": post_detail_json})
+        except Post.DoesNotExist:
+            raise PostNotFoundException
 
-        post_json = {
-            "id": post.id,
-            "title": post.title,
-            "content": post.content,
-            "status": post.status,
-            "user": post.user.id,
-        }
-        
-        return JsonResponse({
-            'status': 200,
-            'message': '게시글 단일 조회 성공',
-            'data': post_json
-        })
+    
 
     if request.method == "PATCH":
         body = json.loads(request.body.decode('utf-8'))
@@ -315,7 +326,7 @@ class PostList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @swagger_auto_schema(
         operation_summary="게시글 목록 조회",
